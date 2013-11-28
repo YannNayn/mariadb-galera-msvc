@@ -3,6 +3,7 @@ mariadb-galera-msvc
 compiling:
 have zlib.lib or zdll.lib in the link libpath as z.lib
 have libeay32.lib in the link libpath as crypto.lib
+have libeay32.lib in the link libpath as myssys_ssl.lib
 have cmake installed (HEAD does it 2.18 is checked for this purpose)
 have wix installed
 launch a VC++ command prompt
