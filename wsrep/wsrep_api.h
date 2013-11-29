@@ -53,7 +53,7 @@ extern "C" {
  *  wsrep replication API
  */
 
-#define WSREP_INTERFACE_VERSION "23"
+#define WSREP_INTERFACE_VERSION "23.1"
 
 /*!
  *  Certain provider capabilities application may need to know
@@ -864,6 +864,8 @@ struct wsrep_ {
    */
     void (*free)(wsrep_t* wsrep);
 
+    void (*free_options)(wsrep_t* wsrep,void *);
+    
     void *dlh;    //!< reserved for future use
     void *ctx;    //!< reserved for implemetation private context
 };
