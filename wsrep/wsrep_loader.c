@@ -136,6 +136,7 @@ int wsrep_load(const char *spec, wsrep_t **hptr, wsrep_log_cb_t log_cb)
     void *dlh = NULL;
     wsrep_loader_fun dlfun;
     const size_t msg_len = 1024;
+	wsrep_t *hptr0;
     char *msg=alloca(sizeof(char)*(msg_len + 1));
     msg[msg_len] = 0;
 
@@ -153,10 +154,10 @@ int wsrep_load(const char *spec, wsrep_t **hptr, wsrep_log_cb_t log_cb)
         logger (WSREP_LOG_FATAL, "wsrep_load(): out of memory");
         return ENOMEM;
     }
-
+	hptr0=*hptr;
     if (!spec || strcmp(spec, WSREP_NONE) == 0) {
-        if ((ret = wsrep_dummy_loader(*hptr)) != 0) {
-            free (*hptr);
+        if ((ret = wsrep_dummy_loader(hptr0)) != 0) {
+            free (hptr0);
             *hptr = NULL;
         }
         return ret;
@@ -174,34 +175,34 @@ int wsrep_load(const char *spec, wsrep_t **hptr, wsrep_log_cb_t log_cb)
         goto out;
     }
 
-    if ((ret = (*dlfun)(*hptr)) != 0) {
+    if ((ret = (*dlfun)(hptr0)) != 0) {
         snprintf(msg, msg_len, "wsrep_load(): loader failed: %s",
                  strerror(ret));
         logger (WSREP_LOG_ERROR, msg);
         goto out;
     }
 
-    if ((ret = verify(*hptr, WSREP_INTERFACE_VERSION)) != 0) {
+    if ((ret = verify(hptr0, WSREP_INTERFACE_VERSION)) != 0) {
         snprintf (msg, msg_len,
                   "wsrep_load(): interface version mismatch: my version %s, "
                   "provider version %s", WSREP_INTERFACE_VERSION,
-                  (*hptr)->version);
+                  hptr0->version);
         logger (WSREP_LOG_ERROR, msg);
         goto out;
     }
 
-    (*hptr)->dlh = dlh;
+    hptr0->dlh = dlh;
 
 out:
     if (ret != 0) {
         if (dlh) dlclose(dlh);
-        free(*hptr);
+        free(hptr0);
         *hptr = NULL;
     } else {
         snprintf (msg, msg_len,
                   "wsrep_load(): %s %s by %s loaded succesfully.",
-                  (*hptr)->provider_name, (*hptr)->provider_version,
-                  (*hptr)->provider_vendor);
+                  hptr0->provider_name, hptr0->provider_version,
+                  hptr0->provider_vendor);
         logger (WSREP_LOG_INFO, msg);
     }
 
