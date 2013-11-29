@@ -30,11 +30,15 @@
 # define inline __inline
 #endif
 #endif
-#ifndef SSIZE_T
-#define SSIZE_T ssize_t
+#ifndef _SSIZE_T_DEFINED
+#ifndef ssize_t
+#ifdef  _WIN64
+typedef __int64    ssize_t;
+#else
+typedef _W64 int   ssize_t;
 #endif
-#ifndef ssize_t 
-#define ssize_t SSIZE_T
+#define _SIZE_T_DEFINED
+#endif
 #endif
 
 #endif
