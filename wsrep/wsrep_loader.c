@@ -115,12 +115,17 @@ static int verify(const wsrep_t *wh, const char *iface_ver)
 
 static wsrep_loader_fun wsrep_dlf(void *dlh, const char *sym)
 {
+#ifdef _MSC_VER
+	return (wsrep_loader_fun)dlsym(dlh, sym);
+#else
+
     union {
         wsrep_loader_fun dlfun;
         void *obj;
     } alias;
     alias.obj = dlsym(dlh, sym);
     return alias.dlfun;
+#endif
 }
 
 extern int wsrep_dummy_loader(wsrep_t *w);
