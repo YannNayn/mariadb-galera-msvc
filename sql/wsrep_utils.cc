@@ -160,7 +160,7 @@ process::process (const char* cmd, const char* type)
 	char * sh_cmd;
 	if(str_[0])
 	{
-		sh_cmd = (char *)malloc(3 + bin_path_len + 4 + strlen(str_));
+		sh_cmd = (char *)malloc(3 + bin_path_len + 4 + strlen(str_) + 1);
 		strcpy(sh_cmd,"cd ");
 		strcat(sh_cmd,bin_path_s);
 		strcat(sh_cmd," && ");
