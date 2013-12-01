@@ -864,7 +864,7 @@ struct wsrep_ {
    */
     void (*free)(wsrep_t* wsrep);
 
-    void (*free_options)(wsrep_t* wsrep,void *);
+    void (*free_options)(wsrep_t* wsrep,void *opts);
     
     void *dlh;    //!< reserved for future use
     void *ctx;    //!< reserved for implemetation private context

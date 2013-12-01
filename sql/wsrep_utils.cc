@@ -176,7 +176,7 @@ process::process (const char* cmd, const char* type)
 
       // Close original write end of pipe
       _close(pipe_fds[close_fd]);
-
+	  pipe_fds[close_fd]=-1;
     io_ = fdopen (pipe_fds[parent_end], type);
 
     if (io_)

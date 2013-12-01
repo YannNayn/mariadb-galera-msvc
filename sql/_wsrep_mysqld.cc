@@ -768,7 +768,7 @@ bool wsrep_start_replication()
     if (opts)
     {
       wsrep_provider_options_init(opts);
-      wsrep->free_options(wsrep,opts);
+      free(opts);
     }
     else
     {
