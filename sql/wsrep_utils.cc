@@ -23,6 +23,7 @@
 #include <windows.h>
 #include <errno.h>    // errno
 #include <string.h>   // strerror()
+#include <string>   // strerror()
 extern "C"
 {
 char **get_environment(void);
