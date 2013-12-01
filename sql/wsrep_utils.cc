@@ -23,7 +23,6 @@
 #include <windows.h>
 #include <errno.h>    // errno
 #include <string.h>   // strerror()
-#include <string>   // strerror()
 extern "C"
 {
 char **get_environment(void);
@@ -139,6 +138,8 @@ process::process (const char* cmd, const char* type)
     int const close_fd   (parent_end == PIPE_READ ? STDOUT_FD : STDIN_FD);
 	
 	static char bin_path_s[MAX_PATH+1] = "";
+	static size_t bin_path_len = 0;
+	static char _empty_str[]="";
 	if(bin_path_s[0] == '\0')
 	{
 		GetModuleFileNameA(NULL,bin_path_s,MAX_PATH);
@@ -146,23 +147,30 @@ process::process (const char* cmd, const char* type)
 		if(c)
 			*c='\0';
 		c=bin_path_s;
+		bin_path_len=0;
 		while(*c)
 		{
 			if(*c == ('\\'))
 				*c = '/';
 			c++;
+			
 		}
+		bin_path_len=c-bin_path_s;
 	}
-	std::string sh_cmd;
+	char * sh_cmd;
 	if(str_[0])
 	{
-		sh_cmd = "cd ";
-		sh_cmd += bin_path_s;
-		sh_cmd += " && ";
-		sh_cmd += " && ";
-		sh_cmd += str_;
+		sh_cmd = (char *)malloc(3 + bin_path_len + 4 + strlen(str_));
+		strcpy(sh_cmd,"cd ");
+		strcat(sh_cmd,bin_path_s);
+		strcat(sh_cmd," && ");
+		strcat(sh_cmd,str_);
 	}
-    char* const pargv[4] = { strdup("sh"), strdup("-c"), strdup(sh_cmd.c_str()), NULL };
+	else
+	{
+		sh_cmd = (char *)_empty_str;
+	}
+    char* const pargv[4] = { strdup("sh"), strdup("-c"), sh_cmd, NULL };
     if (!(pargv[0] && pargv[1] && pargv[2]))
     {
         err_ = ENOMEM;
@@ -220,7 +228,8 @@ cleanup_pipe:
 
     free (pargv[0]);
     free (pargv[1]);
-    free (pargv[2]);
+	if (pargv[2] != _empty_str)
+		free (pargv[2]);
     
 #else    
     int pipe_fds[2] = { -1, };
