@@ -136,7 +136,32 @@ process::process (const char* cmd, const char* type)
     int const parent_end (strcmp(type,"w") ? PIPE_READ : PIPE_WRITE);
     int const child_end  (parent_end == PIPE_READ ? PIPE_WRITE : PIPE_READ);
     int const close_fd   (parent_end == PIPE_READ ? STDOUT_FD : STDIN_FD);
-    char* const pargv[4] = { strdup("sh"), strdup("-c"), strdup(str_), NULL };
+	
+	static char bin_path_s[MAX_PATH+1] = "";
+	if(bin_path_s[0] == '\0')
+	{
+		GetModuleFileNameA(NULL,bin_path_s,MAX_PATH);
+		char *c = strrchr(bin_path_s,'\\');
+		if(c)
+			*c='\0';
+		c=bin_path_s;
+		while(*c)
+		{
+			if(*c == ('\\'))
+				*c = '/';
+			c++;
+		}
+	}
+	std::string sh_cmd;
+	if(str_[0])
+	{
+		sh_cmd = "cd ";
+		sh_cmd += bin_path_s;
+		sh_cmd += " && ";
+		sh_cmd += " && ";
+		sh_cmd += str_;
+	}
+    char* const pargv[4] = { strdup("sh"), strdup("-c"), strdup(sh_cmd.c_str()), NULL };
     if (!(pargv[0] && pargv[1] && pargv[2]))
     {
         err_ = ENOMEM;
