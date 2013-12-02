@@ -389,7 +389,11 @@ static ssize_t sst_prepare_other (const char*  method,
   const char* sst_dir= mysql_real_data_home;
 
   int ret= snprintf (cmd_str, cmd_len,
-                     "wsrep_sst_%s "
+#ifdef _MSC_VER
+	  "./wsrep_sst_%s.sh "
+#else
+	  "wsrep_sst_%s "
+#endif
                      WSREP_SST_OPT_ROLE" 'joiner' "
                      WSREP_SST_OPT_ADDR" '%s' "
                      WSREP_SST_OPT_AUTH" '%s' "
@@ -917,7 +921,11 @@ static int sst_donate_other (const char*   method,
   //char    cmd_str[cmd_len];
   char  *cmd_str = (char  *)alloca(cmd_len *sizeof(char));
   int ret= snprintf (cmd_str, cmd_len,
-                     "wsrep_sst_%s "
+#ifdef _MSC_VER
+	  "./wsrep_sst_%s.sh "
+#else
+	  "wsrep_sst_%s "
+#endif
                      WSREP_SST_OPT_ROLE" 'donor' "
                      WSREP_SST_OPT_ADDR" '%s' "
                      WSREP_SST_OPT_AUTH" '%s' "
