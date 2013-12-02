@@ -691,7 +691,11 @@ static int sst_donate_mysqldump (const char*         addr,
     if (!bypass && wsrep_sst_donor_rejects_queries) sst_reject_queries(TRUE);
 
     snprintf (cmd_str, cmd_len,
-              "wsrep_sst_mysqldump "
+#ifdef _MSC_VER
+	  "./wsrep_sst_mysqldump.sh "
+#else
+	  "wsrep_sst_mysqldump "
+#endif
               WSREP_SST_OPT_USER" '%s' "
               WSREP_SST_OPT_PSWD" '%s' "
               WSREP_SST_OPT_HOST" '%s' "
