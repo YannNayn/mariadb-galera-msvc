@@ -86,10 +86,13 @@ typedef volatile LONG my_pthread_once_t;
 #define MY_PTHREAD_ONCE_INPROGRESS 1
 #define MY_PTHREAD_ONCE_DONE 2
 
-struct timespec {
-  time_t tv_sec;
-  long tv_nsec;
-};
+#ifndef _TIMESPEC_DEFINED
+#define _TIMESPEC_DEFINED
+typedef struct timespec {               /* definition per POSIX.4 */
+         time_t          tv_sec;         /* seconds */
+         long            tv_nsec;        /* and nanoseconds */
+ } timespec_t;
+#endif /* _TIMESPEC_DEFINED */
 
 int win_pthread_mutex_trylock(pthread_mutex_t *mutex);
 int pthread_detach (pthread_t tid);
