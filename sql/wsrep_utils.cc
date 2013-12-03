@@ -20,14 +20,9 @@
 #define _GNU_SOURCE // POSIX_SPAWN_USEVFORK flag
 #endif
 #if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
-#include <windows.h>
+#include <msvc_sup.h>
 #include <errno.h>    // errno
 #include <string.h>   // strerror()
-extern "C"
-{
-char **get_environment(void);
-int free_environment(char **);
-}
 #else
 #include <spawn.h>    // posix_spawn()
 #include <unistd.h>   // pipe()

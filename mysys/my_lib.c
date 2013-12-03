@@ -425,52 +425,7 @@ error:
   DBUG_RETURN((MY_STAT *) NULL);
 } /* my_stat */
 
-char **
-get_environment(void)
-{
-#if defined(_MSC_VER) && defined(_MT)
-    const char *envStr=GetEnvironmentStrings();
-    const char *c=envStr;
-    char **env_str;
-    int count=0,i;
-    char **ret; 
-    while(*c)
-    {
-        count++;
-        c+=strlen(c)+1;
-    }
-    c=envStr;
-    ret=(char**)malloc((count+1)*sizeof(char *)+sizeof(char *));
-    *(char **)ret=envStr;
-    env_str=(char **)((char **)ret+1);
-    for (i=0;i<count;i++)
-    {
-        env_str[i]=_strdup(c);
-        c+=strlen(c)+1;
-    }
-    env_str[count]=0;
-    return env_str;
-#else
-  return environ;
-#endif
-}
 
-int free_environment(char **env_str)
-{
-#if defined(_MSC_VER) && defined(_MT)
-	char **env=env_str;
-	BOOL ret;
-    for (; *env_str; ++env_str) {
-		free(*env_str);
-	}
-	ret=FreeEnvironmentStringsA((char *)*(env-1));
-	if(!ret)
-		return -1;
-	
-#endif
-	
-	return 0;
-}
 #if defined(_MSC_VER) && (1==0)
 /*
  * dlfcn-win32
