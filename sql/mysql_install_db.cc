@@ -249,8 +249,8 @@ static char *init_bootstrap_command_line(char *cmdline, size_t size)
   my_snprintf(cmdline, size-1, 
     "\"\"%s\" --no-defaults %s --bootstrap"
     " \"--lc-messages-dir=%s/share\""
-    " --basedir=. --datadir=. --default-storage-engine=myisam"
-    " --max_allowed_packet=9M --loose-skip-innodb"
+    " --basedir=. --datadir=. --default-storage-engine=innodb"
+    " --max_allowed_packet=9M "
     " --net-buffer-length=16k\"", mysqld_path,
     opt_verbose_bootstrap?"--console":"", basedir );
   return cmdline;
