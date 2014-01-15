@@ -470,4 +470,4 @@ maria_declare_plugin(wsrep)
    "1.0",                                        /* String version   */
   MariaDB_PLUGIN_MATURITY_BETA                  /* Maturity         */
 }
-mysql_declare_plugin_end;
+maria_declare_plugin_end;
