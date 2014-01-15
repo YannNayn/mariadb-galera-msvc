@@ -84,10 +84,7 @@ void wsrep_cleanup_transaction(THD *thd)
 /*
   wsrep hton
 */
-extern "C"
-{
-handlerton *wsrep_hton;
-}
+
 void wsrep_register_hton(THD* thd, bool all)
 {
   THD_TRANS *trans=all ? &thd->transaction.all : &thd->transaction.stmt;
@@ -457,7 +454,7 @@ struct st_mysql_storage_engine wsrep_storage_engine=
 { MYSQL_HANDLERTON_INTERFACE_VERSION };
 
 
-mysql_declare_plugin(wsrep)
+maria_declare_plugin(wsrep)
 {
   MYSQL_STORAGE_ENGINE_PLUGIN,
   &wsrep_storage_engine,
@@ -470,7 +467,7 @@ mysql_declare_plugin(wsrep)
   0x0100 /* 1.0 */,
   NULL,                       /* status variables                */
   NULL,                       /* system variables                */
-  NULL,                        /* config options                  */
-  0,                          /* flags                           */
+   "1.0",                                        /* String version   */
+  MariaDB_PLUGIN_MATURITY_BETA                  /* Maturity         */
 }
 mysql_declare_plugin_end;

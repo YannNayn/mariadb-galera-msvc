@@ -22,6 +22,8 @@ endif()
 
 MESSAGE(STATUS "Running cmake version ${CMAKE_VERSION}")
 
+
+
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
 
 # Distinguish between community and non-community builds, with the
@@ -39,6 +41,8 @@ ENDIF()
 
 SET(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING
    "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel")
+
+
 
 IF(UNIX AND NOT APPLE)
   # Note, that generally one should not change settings depending
@@ -131,6 +135,7 @@ IF (NOT CPACK_GENERATOR)
     SET(CPACK_GENERATOR "TGZ")
   ENDIF(WIN32) 
 ENDIF(NOT CPACK_GENERATOR)
+
 
 INCLUDE(mysql_version)
 INCLUDE(cpack_source_ignore_files)
@@ -287,6 +292,22 @@ ELSEIF(MYSQL_MAINTAINER_MODE MATCHES "AUTO")
   SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${MY_MAINTAINER_C_WARNINGS}")
   SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${MY_MAINTAINER_CXX_WARNINGS}")
 ENDIF()
+IF(MSVC)
+ADD_DEFINITIONS( -DNO_MM -DNO_LOCALE_DLL)
+MESSAGE(STATUS "Modifying cl flags")
+foreach(flag_var
+        CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+        CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO 
+        CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE
+        CMAKE_C_FLAGS_MINSIZEREL CMAKE_C_FLAGS_RELWITHDEBINFO)
+   if(${${flag_var}} MATCHES "/O2")
+      string(REGEX REPLACE "/O2" "/Od" ${flag_var} "${${flag_var}}")
+   endif(${${flag_var}} MATCHES "/O2")
+   if(${${flag_var}} MATCHES "/Ob1")
+        string(REGEX REPLACE "/Ob1" "" ${flag_var} "${${flag_var}}")
+    endif(${${flag_var}} MATCHES "/Ob1")
+endforeach(flag_var)
+endif()
 
 IF(WITH_UNIT_TESTS)
  ENABLE_TESTING()

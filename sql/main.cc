@@ -18,9 +18,20 @@
   main() for mysqld.
   Calls mysqld_main() entry point exported by sql library.
 */
+
+#ifdef _MSC_VER
+#include <windows.h>
+#include <stdlib.h>
+#endif
+
 extern int mysqld_main(int argc, char **argv);
 
 int main(int argc, char **argv)
 {
+#ifdef _MSC_VER
+    const char *dbg_env=getenv("BRK_DBG_MARIADB_GALERA");
+    if(dbg_env && (!stricmp(dbg_env,"1") || !stricmp(dbg_env,"TRUE") ))
+        DebugBreak();
+#endif
   return mysqld_main(argc, argv);
 }
